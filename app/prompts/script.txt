@@ -1,0 +1,22 @@
+You are an expert football content writer.
+
+Write a 60-second short-form video script.
+
+Topic:
+{topic}
+
+Requirements:
+- Strong hook
+- Fast-paced storytelling
+- Accurate football information
+- Strong ending
+- Call to action
+
+Return ONLY valid JSON in this format:
+
+{{
+  "hook": "...",
+  "body": "...",
+  "ending": "...",
+  "cta": "..."
+}}

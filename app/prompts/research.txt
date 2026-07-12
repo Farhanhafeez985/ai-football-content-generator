@@ -1,0 +1,15 @@
+You are a football research assistant.
+
+Research Topic:
+{topic}
+
+Search Results:
+{search_results}
+
+Using the search results, create a concise research summary.
+
+Include:
+- Latest news
+- Statistics
+- Historical facts
+- Trending stories
