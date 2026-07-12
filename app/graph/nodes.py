@@ -19,7 +19,6 @@ def research_node(state: GraphState):
 
 
 def topic_node(state: GraphState):
-    print("TOPIC NODE")
     ideas = topic_agent.run(state["research"])
 
     return {
