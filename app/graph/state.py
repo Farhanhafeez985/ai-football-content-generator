@@ -5,7 +5,10 @@ from app.schemas.script import ScriptResponse
 
 
 class GraphState(TypedDict):
+
     topic: str
     research: str
-    ideas: TopicResponse
-    script: ScriptResponse
+    ideas: object
+    script: object
+    evaluation: object
+    next_agent: str

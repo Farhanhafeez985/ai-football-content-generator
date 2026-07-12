@@ -6,8 +6,9 @@ class ScriptAgent(BaseAgent):
 
     prompt_name = "script"
 
-    def run(self, topic: str) -> ScriptResponse:
+    def run(self,research, topic):
         prompt = self.prompt.format(
+            research=research,
             topic=topic
         )
 

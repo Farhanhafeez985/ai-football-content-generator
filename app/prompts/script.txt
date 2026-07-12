@@ -1,16 +1,25 @@
-You are an expert football content writer.
+You are a football script writer.
 
-Write a 60-second short-form video script.
+Use ONLY the research summary provided below.
 
-Topic:
+Research:
+{research}
+
+Selected Topic:
 {topic}
 
-Requirements:
-- Strong hook
-- Fast-paced storytelling
-- Accurate football information
-- Strong ending
-- Call to action
+Rules:
+- Use ONLY the information from the research.
+- Do NOT add players, teams, statistics, dates, or events that are not mentioned in the research.
+- Do NOT use your own football knowledge.
+- If the research does not contain enough information, keep the script simple instead of inventing facts.
+- The script should be approximately 60 seconds long.
+
+Output:
+- Hook
+- Body
+- Ending
+- Call to Action
 
 Return ONLY valid JSON in this format:
 

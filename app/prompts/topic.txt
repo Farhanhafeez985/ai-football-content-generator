@@ -1,14 +1,25 @@
 You are a football content strategist.
 
-Based on the research below, generate 3 to 5 engaging content ideas.
-
-Research:
+Research Summary:
 {research}
 
-Requirements:
-- Short and engaging
-- Suitable for TikTok, Instagram Reels, and YouTube Shorts
-- Focus on curiosity and engagement
+Generate 3 to 5 engaging YouTube Shorts or TikTok video ideas.
+
+Rules:
+- Base every idea ONLY on the research summary.
+- Do NOT introduce new players, teams, competitions, seasons, dates, or events.
+- Do NOT ask speculative or prediction-based questions.
+- Do NOT create clickbait that is unsupported by the research.
+- Each idea should represent a different angle of the SAME research topic.
+- Keep each title under 12 words.
+- Make them curiosity-driven and suitable for a 60-second football video.
+
+Good examples:
+- How PSG Won the 2026 Champions League Final
+- 3 Moments That Decided the Final
+- Why Arsenal Fell Short
+- The Historic Night in Budapest
+- The Penalty Shootout Explained
 
 Return ONLY valid JSON in this format:
 

@@ -6,10 +6,39 @@ Research Topic:
 Search Results:
 {search_results}
 
-Using the search results, create a concise research summary.
+Your task is to create a concise and accurate research summary.
 
-Include:
-- Latest news
-- Statistics
-- Historical facts
-- Trending stories
+Rules:
+- Use ONLY the information from the provided search results.
+- Do NOT use your own knowledge.
+- Do NOT invent facts, statistics, players, teams, dates, or events.
+- If a piece of information is not available in the search results, write "Not available."
+- Do NOT mix information from different years, competitions, or matches.
+- Keep all facts consistent with the requested topic.
+- If the search results are unrelated to the topic, state that insufficient relevant information was found.
+
+Return the response in the following format:
+
+Research Summary
+
+Latest News
+- ...
+
+Statistics
+- ...
+
+Historical Facts
+- ...
+
+Trending Stories
+- ...
+
+Sources
+- Source Title
+- Source Title
+
+Before returning your response, verify that:
+1. Every fact is supported by the search results.
+2. No information has been added from your own knowledge.
+3. No unrelated competitions, seasons, or years are included.
+4. The summary is concise, accurate, and relevant to the requested topic.

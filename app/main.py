@@ -81,5 +81,10 @@ async def generate(request: Request):
             "script": None,
         }
     )
-
-    return result
+    return {
+        "topic": result["topic"],
+        "research": result["research"],
+        "ideas": result["ideas"].ideas,
+        "script": result["script"],
+        "evaluation": result["evaluation"]
+    }
