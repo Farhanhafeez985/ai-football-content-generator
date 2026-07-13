@@ -72,7 +72,7 @@ async def generate(request: Request):
     body = await request.json()
 
     topic = body.get("topic")
-
+    # print(workflow.get_graph().draw_mermaid())
     result = workflow.invoke(
         {
             "topic": topic,
