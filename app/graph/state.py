@@ -10,3 +10,5 @@ class GraphState(TypedDict):
     evaluation: object
     next_agent: str
     retry_count: int
+    audio_path: str
+    narration: str

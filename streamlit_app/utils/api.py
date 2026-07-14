@@ -1,10 +1,16 @@
+import os
+from pathlib import Path
 import requests
 import json
-from app.config import settings
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+
+API_TOKEN = os.getenv("API_TOKEN")
 
 def stream_response(topic):
     headers = {
-        'Authorization': f'Bearer {settings.API_TOKEN}',
+        'Authorization': f'Bearer {API_TOKEN}',
         'Content-Type': 'application/json'
     }
     response = requests.post(

@@ -6,10 +6,15 @@ from app.graph.nodes import (
     research_node,
     topic_node,
     script_node,
-    evaluator_node
+    evaluator_node,
+    voice_node,
 )
 
 workflow = StateGraph(GraphState)
+
+# ----------------------------
+# Nodes
+# ----------------------------
 
 workflow.add_node(
     "supervisor",
@@ -36,10 +41,23 @@ workflow.add_node(
     evaluator_node
 )
 
+workflow.add_node(
+    "voice",
+    voice_node,
+)
+
+# ----------------------------
+# Entry Point
+# ----------------------------
+
 workflow.set_entry_point(
     "supervisor"
 )
 
+
+# ----------------------------
+# Routing
+# ----------------------------
 
 def route(state):
     return state["next_agent"]
@@ -52,10 +70,14 @@ workflow.add_conditional_edges(
         "research": "research",
         "topic": "topic",
         "script": "script",
-        "evaluator": "evaluator",
+        "voice": "voice",
         "finish": END,
     }
 )
+
+# ----------------------------
+# Fixed Edges
+# ----------------------------
 
 workflow.add_edge(
     "research",
@@ -72,9 +94,18 @@ workflow.add_edge(
     "evaluator"
 )
 
+# Evaluator finishes its work,
+# then Supervisor decides what to do next.
 workflow.add_edge(
     "evaluator",
-    "supervisor"
+    "supervisor",
+)
+
+# Voice generation complete,
+# then Supervisor decides to finish.
+workflow.add_edge(
+    "voice",
+    "supervisor",
 )
 
 workflow = workflow.compile()

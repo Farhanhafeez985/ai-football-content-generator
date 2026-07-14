@@ -16,10 +16,21 @@ Rules:
 - The script should be approximately 60 seconds long.
 
 Output:
-- Hook
-- Body
-- Ending
-- Call to Action
+Generate the fields in this order:
+
+1. Hook
+2. Body
+3. Ending
+4. CTA
+
+After generating those four fields, create the Narration by concatenating them into one smooth paragraph.
+
+The Narration is NOT a new script.
+It must contain the same information as the Hook, Body, Ending, and CTA, only with natural transitions between sentences.
+
+Do NOT introduce new facts.
+Do NOT remove facts.
+Do NOT rewrite the story.
 
 Return ONLY valid JSON in this format:
 
@@ -27,5 +38,6 @@ Return ONLY valid JSON in this format:
   "hook": "...",
   "body": "...",
   "ending": "...",
-  "cta": "..."
+  "cta": "...",
+  "narration":"..."
 }}

@@ -3,6 +3,7 @@ from app.agents.research import ResearchAgent
 from app.agents.topic import TopicAgent
 from app.agents.script import ScriptAgent
 from app.agents.evaluator import EvaluatorAgent
+from app.agents.voice import VoiceAgent
 
 
 supervisor_agent = SupervisorAgent()
@@ -10,6 +11,7 @@ research_agent = ResearchAgent()
 topic_agent = TopicAgent()
 script_agent = ScriptAgent()
 evaluator_agent = EvaluatorAgent()
+voice_agent = VoiceAgent()
 
 def supervisor_node(state):
     decision = supervisor_agent.run(state)
@@ -81,4 +83,14 @@ def evaluator_node(state):
     return {
         "evaluation": result,
         "retry_count": retry
+    }
+
+
+def voice_node(state):
+    script = state["script"]
+    audio_path = voice_agent.run(
+        narration=script.narration,
+    )
+    return {
+        "audio_path": audio_path,
     }

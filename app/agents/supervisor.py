@@ -18,30 +18,45 @@ class SupervisorAgent(BaseAgent):
 
         decision = structured_llm.invoke(prompt)
 
+        # Normalize legacy value
         if decision.next_agent == "evaluate":
             decision.next_agent = "evaluator"
 
-        # Safety routing
+        # ----------------------------
+        # Safety Routing
+        # ----------------------------
 
         if not state.get("research"):
             decision.next_agent = "research"
 
-        elif state.get("research") and not state.get("ideas"):
+        elif not state.get("ideas"):
             decision.next_agent = "topic"
 
-        elif state.get("ideas") and not state.get("script"):
+        elif not state.get("script"):
             decision.next_agent = "script"
 
-        elif state.get("script") and not state.get("evaluation"):
+        elif not state.get("evaluation"):
             decision.next_agent = "evaluator"
 
+        # Audio already generated -> Finish
+        elif state.get("audio_path"):
+            decision.next_agent = "finish"
 
+        # Evaluation completed
         elif state.get("evaluation"):
+
             if (
-                    state["evaluation"].quality == "poor"
-                    and state.get("retry_count", 0) < settings.MAX_SCRIPT_RETRIES
+                state["evaluation"].quality == "poor"
+                and state.get("retry_count", 0) < settings.MAX_SCRIPT_RETRIES
             ):
                 decision.next_agent = "script"
+
+            elif (
+                state["evaluation"].quality == "good"
+                and not state.get("audio_path")
+            ):
+                decision.next_agent = "voice"
+
             else:
                 decision.next_agent = "finish"
 

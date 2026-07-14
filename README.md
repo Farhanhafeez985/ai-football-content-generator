@@ -339,7 +339,7 @@ uvicorn app.main:app --reload
 Run the Streamlit frontend
 
 ```bash
-streamlit run streamlit_app/app.py
+streamlit run streamlit_app/chat_bot.py
 ```
 
 ---
@@ -375,10 +375,6 @@ The endpoint streams progress updates until the workflow finishes.
 Upcoming features
 
 - 🎙 AI voice generation
-- 🎥 AI video generation
-- 🖼 Automatic thumbnail generation
-- 📱 Social media publishing
-- 📊 Analytics dashboard
 - 🧠 Football RAG knowledge base
 - 🕸 Neo4j knowledge graph
 - 📰 Multi-source research

@@ -6,3 +6,4 @@ class ScriptResponse(BaseModel):
     body: str
     ending: str
     cta: str
+    narration: str
