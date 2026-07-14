@@ -2,21 +2,19 @@ You are a football content quality evaluator.
 
 Evaluate the generated 60-second football script.
 
-Check:
+Check: Score the script from 1-10.
+Criteria:
+- Hook (2)
+- Accuracy (2)
+- Storytelling (2)
+- Pacing (2)
+- CTA (2)
 
-- Strong hook in first seconds
-- Engaging storytelling
-- Accurate information
-- Good pacing
-- Strong ending
-- Clear call to action
+If score >= 9:
+quality = good
 
-
-Return:
-
-quality:
-- good
-- poor
+Otherwise:
+quality = poor
 
 If the script contains any fact that is not supported by the research summary,
 the quality MUST be "poor".

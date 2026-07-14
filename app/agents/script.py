@@ -6,10 +6,18 @@ class ScriptAgent(BaseAgent):
 
     prompt_name = "script"
 
-    def run(self,research, topic):
+    def run(
+            self,
+            research,
+            topic,
+            previous_script=None,
+            feedback=None,
+    ):
         prompt = self.prompt.format(
             research=research,
-            topic=topic
+            topic=topic,
+            previous_script=previous_script or "",
+            feedback=feedback or "",
         )
 
         structured_llm = self.llm.with_structured_output(

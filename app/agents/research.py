@@ -11,7 +11,7 @@ class ResearchAgent(BaseAgent):
             model=self.llm,
             tools=TOOLS,
             system_prompt=self.prompt_manager.load("research"),
-            debug=True,
+            # debug=True,
         )
 
     def run(self, topic):

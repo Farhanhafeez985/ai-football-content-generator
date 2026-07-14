@@ -1,0 +1,131 @@
+details.agent-card {
+
+    border: 1px solid #2d2d2d;
+    border-radius: 14px;
+
+    background: #161616;
+
+    margin-bottom: 18px;
+
+    overflow: hidden;
+}
+
+details.agent-card summary {
+
+    list-style: none;
+
+    cursor: pointer;
+
+    padding: 18px 22px;
+}
+
+details.agent-card summary::-webkit-details-marker {
+    display:none;
+}
+
+.agent-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.agent-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:white;
+}
+
+.agent-status{
+
+    color:#22c55e;
+
+    font-weight:600;
+}
+
+.agent-body{
+
+    border-top:1px solid #2d2d2d;
+
+    padding:20px;
+
+    color:white;
+}
+
+.agent-body pre{
+
+    white-space:pre-wrap;
+
+    font-family:inherit;
+
+    margin:0;
+}
+
+/* ===========================
+   User Message
+=========================== */
+
+.user-message{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin:24px 0;
+
+}
+
+.user-bubble{
+
+    max-width:70%;
+
+    background:#1E2430;
+
+    color:#FFFFFF;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    border:1px solid #303846;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+.user-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#3B82F6;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    flex-shrink:0;
+
+}

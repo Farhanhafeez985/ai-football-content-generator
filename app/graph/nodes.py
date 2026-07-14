@@ -45,20 +45,40 @@ def script_node(state):
     selected_topic = state["ideas"].ideas[0].title
 
     script = script_agent.run(
-        research,
-        selected_topic
+        research=research,
+        topic=selected_topic,
+        previous_script=state.get("script"),
+        feedback=(
+            state["evaluation"].feedback
+            if state.get("evaluation")
+            else None
+        ),
     )
 
+    retry = state.get("retry_count", 0)
+
+    # Increment only when regenerating after evaluation
+    if state.get("evaluation"):
+        retry += 1
     return {
-        "script": script
+        "script": script,
+        "retry_count": retry,
     }
+
+# DEBUG_EVALUATION = True  # False in production
+
 
 def evaluator_node(state):
 
     result = evaluator_agent.run(
         state["script"]
     )
-
+    # # Debug only
+    # if DEBUG_EVALUATION:
+    #     result.quality = "poor"
+    #     result.feedback = "Debug mode: forcing retry."
+    retry = state.get("retry_count", 0)
     return {
-        "evaluation": result
+        "evaluation": result,
+        "retry_count": retry
     }

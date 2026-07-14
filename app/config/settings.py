@@ -20,5 +20,5 @@ class Settings:
     TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
     API_TOKEN = os.getenv("API_TOKEN")
-    
+    MAX_SCRIPT_RETRIES = 3
 settings = Settings()

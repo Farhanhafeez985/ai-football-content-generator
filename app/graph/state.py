@@ -1,8 +1,5 @@
 from typing import TypedDict
 
-from app.schemas.topic import TopicResponse
-from app.schemas.script import ScriptResponse
-
 
 class GraphState(TypedDict):
 
@@ -12,3 +9,4 @@ class GraphState(TypedDict):
     script: object
     evaluation: object
     next_agent: str
+    retry_count: int

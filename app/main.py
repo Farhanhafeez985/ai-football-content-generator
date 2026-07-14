@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
-
+from fastapi.responses import StreamingResponse
+import json
 from app.config import settings
 from app.llm import get_llm
 # from app.agents.research import ResearchAgent
@@ -65,26 +66,97 @@ def health():
 #     }
 
 
+
+# @app.post("/generate")
+# @token_required
+# async def generate(request: Request):
+#
+#     body = await request.json()
+#
+#     topic = body.get("topic")
+#     # print(workflow.get_graph().draw_mermaid())
+#     result = workflow.invoke(
+#         {
+#             "topic": topic,
+#             "research": "",
+#             "ideas": None,
+#             "script": None,
+#             "evaluation": None,
+#             "retry_count": 0,
+#         }
+#     )
+#     return {
+#         "topic": result["topic"],
+#         "research": result["research"],
+#         "ideas": result["ideas"].ideas,
+#         "script": result["script"],
+#         "evaluation": result["evaluation"]
+#     }
+
+
 @app.post("/generate")
 @token_required
 async def generate(request: Request):
 
-    body = await request.json()
-
-    topic = body.get("topic")
-    # print(workflow.get_graph().draw_mermaid())
-    result = workflow.invoke(
-        {
-            "topic": topic,
-            "research": "",
-            "ideas": None,
-            "script": None,
-        }
-    )
-    return {
-        "topic": result["topic"],
-        "research": result["research"],
-        "ideas": result["ideas"].ideas,
-        "script": result["script"],
-        "evaluation": result["evaluation"]
+    NODE_STATUS = {
+        "research": "🔍 Research Complete",
+        "topic": "💡 Ideas Generated",
+        "script": "✍️ Script Generated",
+        "evaluator": "🧐 Script Evaluated",
     }
+
+    body = await request.json()
+    topic = body.get("topic")
+
+    initial_state = {
+        "topic": topic,
+        "research": "",
+        "ideas": None,
+        "script": None,
+        "evaluation": None,
+        "retry_count": 0,
+    }
+
+
+    async def event_generator():
+        async for event in workflow.astream(initial_state):
+            node_name = list(event.keys())[0]
+            state = event[node_name]
+            response = {
+                "node": node_name,
+                "status": NODE_STATUS.get(node_name, node_name),
+                "data": None
+            }
+            if node_name == "research":
+                response["data"] = state["research"]
+
+            elif node_name == "topic":
+                response["data"] = [
+                    idea.title
+                    for idea in state["ideas"].ideas
+                ]
+
+            elif node_name == "script":
+                script = state["script"]
+                response["data"] = {
+                    "hook": script.hook,
+                    "body": script.body,
+                    "ending": script.ending,
+                    "cta": script.cta
+                }
+
+            elif node_name == "evaluator":
+                evaluation = state["evaluation"]
+                response["data"] = {
+                    "quality": evaluation.quality,
+                    "feedback": evaluation.feedback,
+                    "retry_count": state.get('retry_count'),
+                    "max_retry_count":3
+                }
+            yield f"data: {json.dumps(response)}\n\n"
+
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream"
+    )

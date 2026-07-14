@@ -1,11 +1,11 @@
 from app.agents.base import BaseAgent
 from app.schemas.supervisor import SupervisorDecision
-
+from app.config import settings
 
 class SupervisorAgent(BaseAgent):
 
     prompt_name = "supervisor"
-
+    DEBUG_EVALUATION = True
     def run(self, state):
 
         prompt = self.prompt.format(
@@ -35,11 +35,13 @@ class SupervisorAgent(BaseAgent):
         elif state.get("script") and not state.get("evaluation"):
             decision.next_agent = "evaluator"
 
+
         elif state.get("evaluation"):
-
-            if state["evaluation"].quality == "poor":
+            if (
+                    state["evaluation"].quality == "poor"
+                    and state.get("retry_count", 0) < settings.MAX_SCRIPT_RETRIES
+            ):
                 decision.next_agent = "script"
-
             else:
                 decision.next_agent = "finish"
 
