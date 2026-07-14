@@ -1,118 +1,88 @@
-```markdown
-# ⚽ AI Football Content Generator
+# ⚽ AI Football Studio
 
-An AI-powered content automation system that creates engaging football content for **TikTok, Instagram Reels, and YouTube Shorts**.
+An AI-powered multi-agent content automation platform that researches football topics, generates viral content ideas, writes engaging short-form scripts, evaluates script quality, and streams the entire workflow in real time.
 
-The system uses a **LangGraph multi-agent architecture** where a supervisor workflow coordinates specialized AI agents to automate:
-
-- Football research
-- Viral topic generation
-- Short-form video script writing
+Built with **LangGraph**, **FastAPI**, **Streamlit**, and **Open-Source LLMs**.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-✅ AI-powered football research  
-✅ Latest football news and trends using Tavily Search  
-✅ Automated content idea generation  
-✅ 60-second video script creation  
-✅ LangGraph agent orchestration  
-✅ Open-source LLM support using Ollama  
-✅ Configurable LLM provider architecture  
-✅ Ready for future RAG integration  
-
----
-
-# 🏗️ Architecture
-
-```
-
-```
-                User
-                  |
-                  ▼
-          LangGraph Workflow
-          (Supervisor)
-                  |
-    ┌─────────────┼─────────────┐
-    ▼             ▼             ▼
-    Research      Topic         Script
-    Agent         Agent         Agent
-    └─────────────┼─────────────┘
-                  |
-                  |
-                  |
-                  ▼
-              Final Result
-
-```
+- 🤖 Multi-Agent AI workflow using LangGraph
+- 🔍 Football research with real-time web search
+- 💡 AI-powered viral topic generation
+- ✍️ Short-form video script generation
+- 🧐 Automated script quality evaluation
+- 🔄 Intelligent retry loop for script improvement
+- ⚡ Real-time workflow streaming (Server-Sent Events)
+- 🎨 Modern Streamlit AI Studio interface
+- 🔐 Token-protected REST API
+- 🦙 Open-source LLM support via Ollama
+- 🔧 Easily switch between different LLM providers
 
 ---
 
-# 🤖 Agents
+# 🏗 Architecture
 
-## 1. Research Agent
-
-Responsible for collecting football information.
-
-### Input
-
+```text
+                      User
+                        │
+                        ▼
+              FastAPI Streaming API
+                        │
+                        ▼
+             LangGraph Supervisor Agent
+                        │
+      ┌─────────────────┼─────────────────┐
+      ▼                 ▼                 ▼
+ Research Agent   Topic Generator   Script Writer
+                                           │
+                                           ▼
+                                   Script Evaluator
+                                           │
+                        ┌──────────────────┴─────────────────┐
+                        │                                    │
+                  Quality Good                        Quality Poor
+                        │                                    │
+                        ▼                                    │
+                 Stream Final Result                Retry Script Generation
+                                                     (Max Retry Limit)
 ```
 
-Football topic
+---
 
-```
+# 🤖 AI Agents
 
-### Uses
+## 🔍 Research Agent
 
-- Tavily Search API
-- LLM summarization
+Collects accurate football information using external search tools.
 
-### Output
+### Responsibilities
 
-- Latest news
-- Statistics
+- Latest football news
 - Historical facts
+- Statistics
 - Trending stories
+- Source collection
 
 ---
 
-## 2. Topic Agent
+## 💡 Topic Generator
 
-Transforms research into engaging short-form content ideas.
+Converts research into engaging short-form content ideas optimized for social media.
 
-### Input
+Output:
 
-```
-
-Research summary
-
-```
-
-### Output
-
-3-5 viral content ideas optimized for:
-
-- TikTok
-- Instagram Reels
-- YouTube Shorts
+- Viral hooks
+- Story ideas
+- Educational topics
+- Comparison videos
 
 ---
 
-## 3. Script Agent
+## ✍️ Script Writer
 
-Creates a complete short-form video script.
-
-### Input
-
-```
-
-Selected content idea
-
-````
-
-### Output
+Generates a structured short-form script.
 
 ```json
 {
@@ -121,142 +91,206 @@ Selected content idea
   "ending": "",
   "cta": ""
 }
-````
+```
+
+---
+
+## 🧐 Script Evaluator
+
+Reviews every generated script.
+
+Checks:
+
+- Quality
+- Clarity
+- Engagement
+- Flow
+- Completeness
+
+If the script quality is poor, feedback is automatically sent back to the Script Writer for regeneration.
 
 ---
 
 # 🔄 Workflow
 
-```
+```text
 START
- |
- ▼
+   │
+   ▼
 Research Agent
- |
- ▼
-Topic Agent
- |
- ▼
-Script Agent
- |
- ▼
-END
+   │
+   ▼
+Topic Generator
+   │
+   ▼
+Script Writer
+   │
+   ▼
+Script Evaluator
+   │
+   ├────────────── Good ─────────────► Finish
+   │
+   └────────────── Poor ─────────────► Retry Script
+                                          │
+                                          ▼
+                                   Script Writer
 ```
 
-LangGraph controls the workflow execution and agent communication.
+The Supervisor Agent automatically decides which agent should execute next based on the current workflow state.
 
 ---
 
-# 🛠️ Tech Stack
+# ⚡ Live Streaming
+
+The backend streams every workflow event to the frontend using **Server-Sent Events (SSE)**.
+
+Example:
+
+```
+Research Complete
+↓
+
+Topic Ideas Generated
+↓
+
+Writing Script...
+↓
+
+Evaluating Script...
+
+↓
+
+Retrying Script...
+↓
+
+Script Approved
+```
+
+The Streamlit frontend updates each agent card in real time.
+
+---
+
+# 🎨 AI Studio Interface
+
+The project includes a modern Streamlit interface inspired by ChatGPT.
+
+Features include:
+
+- Sidebar chat history
+- Live agent status updates
+- Streaming workflow progress
+- Expandable agent cards
+- Real-time script generation
+- Evaluation feedback
+- Dark theme UI
+
+---
+
+# 🛠 Tech Stack
 
 ## Backend
 
-* Python
-* FastAPI
+- Python
+- FastAPI
 
-## AI Framework
+## AI
 
-* LangChain
-* LangGraph
+- LangChain
+- LangGraph
+
+## Frontend
+
+- Streamlit
 
 ## LLM
 
-Current:
+Current
 
-* Ollama
-* Open-source models
+- Ollama
 
-Supported architecture for:
+Supported
 
-* OpenAI GPT
-* Google Gemini
-* Anthropic Claude
-
-Switching models only requires configuration changes.
+- OpenAI
+- Anthropic Claude
+- Google Gemini
+- Local OpenAI-compatible APIs
 
 ---
 
-## Tools
+# 🔧 AI Tools
 
-### Web Search
-
-* Tavily API
+### Custom Tavily Search Tool
 
 Used by the Research Agent for real-time football information.
 
+Capabilities:
+
+- Latest news
+- Statistics
+- Football events
+- Reliable sources
+
 ---
 
-# 📂 Project Structure
+# 📁 Project Structure
 
-```
+```text
 app/
 │
 ├── agents/
-│   ├── base.py
-│   ├── research.py
-│   ├── topic.py
-│   └── script.py
-│
-├── api/
-│   └── auth.py
-│
-├── config/
-│   └── settings.py
 │
 ├── graph/
-│   ├── state.py
+│   ├── workflow.py
 │   ├── nodes.py
-│   └── workflow.py
+│   ├── state.py
+│   └── supervisor.py
 │
 ├── prompts/
-│   ├── research.txt
-│   ├── topic.txt
-│   └── script.txt
 │
 ├── tools/
-│   └── tavily_search.py
 │
 ├── llm.py
 └── main.py
+
+streamlit_app/
+│
+├── app.py
+├── assets/
+├── components/
+├── utils/
 ```
 
 ---
 
-# ⚙️ Installation
-
-## Clone Repository
+# ⚙ Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/yourusername/ai-football-studio.git
 
-cd ai-football-content-generator
+cd ai-football-studio
 ```
 
----
-
-## Create Virtual Environment
+Create a virtual environment
 
 ```bash
 python -m venv .venv
 ```
 
-Activate:
+Activate
 
-### Mac/Linux
+Mac/Linux
 
 ```bash
 source .venv/bin/activate
 ```
 
-### Windows
+Windows
 
 ```bash
 .venv\Scripts\activate
 ```
 
----
-
-## Install Dependencies
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -266,141 +300,109 @@ pip install -r requirements.txt
 
 # 🔐 Environment Variables
 
-Create `.env`
+Create a `.env`
 
 ```env
 LLM_PROVIDER=ollama
 
 OLLAMA_BASE_URL=http://localhost:11434
+
 OLLAMA_MODEL=qwen3:8b
 
-TAVILY_API_KEY=your_api_key
+TAVILY_API_KEY=xxxxxxxx
 
-API_TOKEN=your_secret_token
+API_TOKEN=xxxxxxxx
 ```
 
 ---
 
-# 🧠 Running Locally
+# 🚀 Running the Project
 
-Start Ollama:
+Start Ollama
 
 ```bash
 ollama serve
 ```
 
-Pull model:
+Pull a model
 
 ```bash
 ollama pull qwen3:8b
 ```
 
-Start API:
+Run the FastAPI backend
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-API:
+Run the Streamlit frontend
 
-```
-http://localhost:8000
-```
-
-Swagger:
-
-```
-http://localhost:8000/docs
+```bash
+streamlit run streamlit_app/app.py
 ```
 
 ---
 
-# 🔌 API Example
+# 📡 REST API
 
-## Generate Content
-
-### Request
+### Generate Content
 
 ```
 POST /generate
 ```
 
-Headers:
+Authorization
 
 ```
-Authorization: Bearer your_secret_token
+Bearer <API_TOKEN>
 ```
 
-Body:
+Example
 
 ```json
 {
-  "topic": "Cristiano Ronaldo career story"
+  "topic": "Lionel Messi Career Story"
 }
 ```
 
-Response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "research": "...",
-    "ideas": "...",
-    "script": {
-      "hook": "...",
-      "body": "...",
-      "ending": "...",
-      "cta": "..."
-    }
-  }
-}
-```
+The endpoint streams progress updates until the workflow finishes.
 
 ---
 
-# 🔮 Future Improvements
+# 🚧 Roadmap
 
-## Database & RAG
+Upcoming features
 
-Currently:
-
-* No database
-
-Future:
-
-* Neo4j Vector Database
-* Football knowledge graph
-* RAG pipeline
-* Semantic search
-
----
-
-## Content Automation
-
-Future plans:
-
-* AI voice generation
-* Video generation
-* Automatic captions
-* Social media publishing automation
+- 🎙 AI voice generation
+- 🎥 AI video generation
+- 🖼 Automatic thumbnail generation
+- 📱 Social media publishing
+- 📊 Analytics dashboard
+- 🧠 Football RAG knowledge base
+- 🕸 Neo4j knowledge graph
+- 📰 Multi-source research
+- 🎬 Multi-language content generation
 
 ---
 
-# 🎯 Project Goals
+# 🎯 What This Project Demonstrates
 
-This project demonstrates:
-
-* AI agent development
-* LLM integration
-* Prompt engineering
-* LangGraph orchestration
-* Tool calling
-* Production-ready AI architecture
+- Multi-Agent AI Systems
+- LangGraph Workflows
+- Supervisor-Based Agent Orchestration
+- Streaming AI Applications
+- Prompt Engineering
+- Tool Calling
+- Structured Outputs
+- Retry Mechanisms
+- FastAPI Backend Development
+- Modern Streamlit UI
+- Production-Oriented AI Architecture
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+Licensed under the MIT License.
 See the [LICENSE](LICENSE) file for details.
