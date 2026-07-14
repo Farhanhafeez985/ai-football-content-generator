@@ -1,8 +1,10 @@
 import requests
 import json
+from app.config import settings
+
 def stream_response(topic):
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+        'Authorization': f'Bearer {settings.API_TOKEN}',
         'Content-Type': 'application/json'
     }
     response = requests.post(
