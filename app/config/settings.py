@@ -22,5 +22,7 @@ class Settings:
     API_TOKEN = os.getenv("API_TOKEN")
     MAX_SCRIPT_RETRIES = 3
     DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
+    GROK_API_KEY = os.getenv("GROK_API_KEY")
+    GROK_MODEL = os.getenv("GROK_MODEL")
 
 settings = Settings()

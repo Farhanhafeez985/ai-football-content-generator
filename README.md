@@ -1,52 +1,59 @@
 # ⚽ AI Football Studio
 
-An AI-powered multi-agent content automation platform that researches football topics, generates viral content ideas, writes engaging short-form scripts, evaluates script quality, and streams the entire workflow in real time.
+An AI-powered multi-agent content automation platform that researches football topics, generates viral content ideas, writes engaging short-form scripts, evaluates script quality, generates AI voiceovers, and streams the entire workflow in real time.
 
-Built with **LangGraph**, **FastAPI**, **Streamlit**, and **Open-Source LLMs**.
+Built with **LangGraph**, **FastAPI**, **Streamlit**, **Deepgram**, and **Open-Source LLMs**.
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-- 🤖 Multi-Agent AI workflow using LangGraph
+- 🤖 Multi-Agent AI workflow powered by LangGraph
+- 🧠 Intelligent Supervisor Agent orchestration
 - 🔍 Football research with real-time web search
-- 💡 AI-powered viral topic generation
-- ✍️ Short-form video script generation
+- 💡 AI-powered viral content idea generation
+- ✍️ Structured short-form video script generation
 - 🧐 Automated script quality evaluation
 - 🔄 Intelligent retry loop for script improvement
-- ⚡ Real-time workflow streaming (Server-Sent Events)
-- 🎨 Modern Streamlit AI Studio interface
+- 🎙️ AI voice generation using Deepgram Aura TTS
+- ⚡ Real-time workflow streaming with Server-Sent Events (SSE)
+- 🎨 Modern  Streamlit interface
 - 🔐 Token-protected REST API
-- 🦙 Open-source LLM support via Ollama
-- 🔧 Easily switch between different LLM providers
+- 🦙 Configurable LLM provider architecture
+- 🔧 Easy switching between Ollama, Groq, OpenAI, and Gemini
 
 ---
 
-# 🏗 Architecture
+# 🏗️ Architecture
 
 ```text
-                      User
-                        │
-                        ▼
-              FastAPI Streaming API
-                        │
-                        ▼
-             LangGraph Supervisor Agent
-                        │
-      ┌─────────────────┼─────────────────┐
-      ▼                 ▼                 ▼
- Research Agent   Topic Generator   Script Writer
-                                           │
-                                           ▼
-                                   Script Evaluator
-                                           │
-                        ┌──────────────────┴─────────────────┐
-                        │                                    │
-                  Quality Good                        Quality Poor
-                        │                                    │
-                        ▼                                    │
-                 Stream Final Result                Retry Script Generation
-                                                     (Max Retry Limit)
+                        User
+                          │
+                          ▼
+                FastAPI Streaming API
+                          │
+                          ▼
+               LangGraph Supervisor Agent
+                          │
+      ┌───────────────────┼───────────────────┐
+      ▼                   ▼                   ▼
+ Research Agent    Topic Generator     Script Writer
+                                             │
+                                             ▼
+                                     Script Evaluator
+                                             │
+                    ┌────────────────────────┴────────────────────────┐
+                    │                                                 │
+              Quality Poor                                     Quality Good
+                    │                                                 │
+                    ▼                                                 ▼
+           Retry Script Generation                           Voice Generator
+             (Max Retry Limit)                                    │
+                    ▲                                              ▼
+                    └──────────────────────────────►      Deepgram Aura TTS
+                                                         │
+                                                         ▼
+                                                    MP3 Audio Output
 ```
 
 ---
@@ -55,13 +62,13 @@ Built with **LangGraph**, **FastAPI**, **Streamlit**, and **Open-Source LLMs**.
 
 ## 🔍 Research Agent
 
-Collects accurate football information using external search tools.
+Collects accurate football information using real-time search tools.
 
 ### Responsibilities
 
 - Latest football news
 - Historical facts
-- Statistics
+- Match statistics
 - Trending stories
 - Source collection
 
@@ -69,29 +76,36 @@ Collects accurate football information using external search tools.
 
 ## 💡 Topic Generator
 
-Converts research into engaging short-form content ideas optimized for social media.
+Transforms research into engaging short-form content ideas optimized for:
 
-Output:
+- TikTok
+- Instagram Reels
+- YouTube Shorts
+
+Output includes:
 
 - Viral hooks
 - Story ideas
-- Educational topics
+- Educational content
 - Comparison videos
 
 ---
 
 ## ✍️ Script Writer
 
-Generates a structured short-form script.
+Generates a structured short-form video script.
 
 ```json
 {
   "hook": "",
   "body": "",
   "ending": "",
-  "cta": ""
+  "cta": "",
+  "narration": ""
 }
 ```
+
+The `narration` field is a natural voice-over version of the structured script and is consumed directly by the Voice Generator.
 
 ---
 
@@ -99,15 +113,33 @@ Generates a structured short-form script.
 
 Reviews every generated script.
 
-Checks:
+### Checks
 
-- Quality
+- Content quality
 - Clarity
 - Engagement
 - Flow
 - Completeness
 
-If the script quality is poor, feedback is automatically sent back to the Script Writer for regeneration.
+If the quality is poor, feedback is automatically sent back to the Script Writer for regeneration until the maximum retry limit is reached.
+
+---
+
+## 🎙️ Voice Generator
+
+Converts the approved narration into natural speech.
+
+### Responsibilities
+
+- Generate AI voice using Deepgram Aura TTS
+- Convert narration into MP3
+- Return audio path for downstream processing
+
+### Output
+
+```text
+outputs/audio/script.mp3
+```
 
 ---
 
@@ -128,15 +160,21 @@ Script Writer
    ▼
 Script Evaluator
    │
-   ├────────────── Good ─────────────► Finish
+   ├────────────── Poor ─────────────► Retry Script
+   │                                      │
+   │                                      ▼
+   │                               Script Writer
    │
-   └────────────── Poor ─────────────► Retry Script
-                                          │
-                                          ▼
-                                   Script Writer
+   └────────────── Good ─────────────► Voice Generator
+                                             │
+                                             ▼
+                                      Deepgram Aura TTS
+                                             │
+                                             ▼
+                                           Finish
 ```
 
-The Supervisor Agent automatically decides which agent should execute next based on the current workflow state.
+The Supervisor Agent dynamically determines which agent should execute next based on the current workflow state.
 
 ---
 
@@ -144,56 +182,69 @@ The Supervisor Agent automatically decides which agent should execute next based
 
 The backend streams every workflow event to the frontend using **Server-Sent Events (SSE)**.
 
-Example:
+Example workflow:
 
+```text
+🔍 Research Complete
+
+↓
+
+💡 Topic Ideas Generated
+
+↓
+
+✍️ Writing Script...
+
+↓
+
+🧐 Evaluating Script...
+
+↓
+
+🔄 Retrying Script...
+
+↓
+
+✅ Script Approved
+
+↓
+
+🎙️ Generating Voice...
+
+↓
+
+🎧 Voice Ready
 ```
-Research Complete
-↓
 
-Topic Ideas Generated
-↓
-
-Writing Script...
-↓
-
-Evaluating Script...
-
-↓
-
-Retrying Script...
-↓
-
-Script Approved
-```
-
-The Streamlit frontend updates each agent card in real time.
+The Streamlit frontend updates each agent card in real time as the workflow progresses.
 
 ---
 
 # 🎨 AI Studio Interface
 
-The project includes a modern Streamlit interface inspired by ChatGPT.
+The project includes a modern ChatGPT-inspired interface built with Streamlit.
 
-Features include:
+### Features
 
-- Sidebar chat history
-- Live agent status updates
-- Streaming workflow progress
-- Expandable agent cards
-- Real-time script generation
-- Evaluation feedback
-- Dark theme UI
+- 💬 Chat-style conversation interface
+- 📂 Sidebar conversation history
+- ⚡ Live workflow streaming
+- 🤖 Expandable AI agent cards
+- 📊 Real-time workflow status
+- 🔄 Retry progress visualization
+- 🎙️ Voice generation status
+- 🌙 Modern dark theme UI
 
 ---
 
-# 🛠 Tech Stack
+# 🛠️ Tech Stack
 
 ## Backend
 
 - Python
 - FastAPI
 
-## AI
+## AI Framework
 
 - LangChain
 - LangGraph
@@ -202,7 +253,7 @@ Features include:
 
 - Streamlit
 
-## LLM
+## LLM Providers
 
 Current
 
@@ -213,22 +264,37 @@ Supported
 - OpenAI
 - Anthropic Claude
 - Google Gemini
-- Local OpenAI-compatible APIs
+- Groq
+- Local OpenAI-Compatible APIs
 
 ---
 
 # 🔧 AI Tools
 
-### Custom Tavily Search Tool
+## Tavily Search
 
-Used by the Research Agent for real-time football information.
+Used by the Research Agent.
 
-Capabilities:
+Capabilities
 
-- Latest news
-- Statistics
-- Football events
+- Latest football news
+- Match statistics
+- Historical facts
+- Trending stories
 - Reliable sources
+
+---
+
+## Deepgram Aura TTS
+
+Used by the Voice Generator.
+
+Capabilities
+
+- Natural AI voice generation
+- MP3 audio output
+- Multiple voice models
+- Production-quality narration
 
 ---
 
@@ -238,6 +304,17 @@ Capabilities:
 app/
 │
 ├── agents/
+│   ├── base.py
+│   ├── research.py
+│   ├── topic.py
+│   ├── script.py
+│   ├── evaluator.py
+│   ├── supervisor.py
+│   └── voice.py
+│
+├── api/
+│
+├── config/
 │
 ├── graph/
 │   ├── workflow.py
@@ -246,8 +323,17 @@ app/
 │   └── supervisor.py
 │
 ├── prompts/
+│   ├── research.txt
+│   ├── topic.txt
+│   ├── script.txt
+│   ├── evaluator.txt
+│   └── supervisor.txt
+│
+├── schemas/
 │
 ├── tools/
+│   ├── tavily_search.py
+│   └── deepgram_tts.py
 │
 ├── llm.py
 └── main.py
@@ -257,12 +343,14 @@ streamlit_app/
 ├── app.py
 ├── assets/
 ├── components/
-├── utils/
+└── utils/
 ```
 
 ---
 
-# ⚙ Installation
+# ⚙️ Installation
+
+Clone the repository
 
 ```bash
 git clone https://github.com/yourusername/ai-football-studio.git
@@ -278,13 +366,13 @@ python -m venv .venv
 
 Activate
 
-Mac/Linux
+### macOS / Linux
 
 ```bash
 source .venv/bin/activate
 ```
 
-Windows
+### Windows
 
 ```bash
 .venv\Scripts\activate
@@ -300,16 +388,23 @@ pip install -r requirements.txt
 
 # 🔐 Environment Variables
 
-Create a `.env`
+Create a `.env` file.
 
 ```env
 LLM_PROVIDER=ollama
 
 OLLAMA_BASE_URL=http://localhost:11434
-
 OLLAMA_MODEL=qwen3:8b
 
+GROQ_API_KEY=xxxxxxxx
+
+OPENAI_API_KEY=xxxxxxxx
+
+GEMINI_API_KEY=xxxxxxxx
+
 TAVILY_API_KEY=xxxxxxxx
+
+DEEPGRAM_API_KEY=xxxxxxxx
 
 API_TOKEN=xxxxxxxx
 ```
@@ -324,7 +419,7 @@ Start Ollama
 ollama serve
 ```
 
-Pull a model
+Pull your model
 
 ```bash
 ollama pull qwen3:8b
@@ -339,14 +434,14 @@ uvicorn app.main:app --reload
 Run the Streamlit frontend
 
 ```bash
-streamlit run streamlit_app/chat_bot.py
+streamlit run streamlit_app/app.py
 ```
 
 ---
 
 # 📡 REST API
 
-### Generate Content
+## Generate Content
 
 ```
 POST /generate
@@ -358,7 +453,7 @@ Authorization
 Bearer <API_TOKEN>
 ```
 
-Example
+Example Request
 
 ```json
 {
@@ -366,32 +461,39 @@ Example
 }
 ```
 
-The endpoint streams progress updates until the workflow finishes.
+The endpoint streams workflow progress until completion using **Server-Sent Events (SSE)**.
 
----
+Example streamed event
 
-# 🚧 Roadmap
+```json
+{
+    "node": "research",
+    "status": "🔍 Research Complete",
+    "data": {}
+}
+```
 
-Upcoming features
-
-- 🎙 AI voice generation
-- 🧠 Football RAG knowledge base
-- 🕸 Neo4j knowledge graph
-- 📰 Multi-source research
-- 🎬 Multi-language content generation
-
----
+```json
+{
+    "node": "voice",
+    "status": "🎙️ Voice Generated",
+    "data": {
+        "audio_path": "outputs/audio/script.mp3"
+    }
+}
+```
 
 # 🎯 What This Project Demonstrates
 
 - Multi-Agent AI Systems
 - LangGraph Workflows
 - Supervisor-Based Agent Orchestration
-- Streaming AI Applications
+- Streaming AI Applications (SSE)
 - Prompt Engineering
 - Tool Calling
-- Structured Outputs
-- Retry Mechanisms
+- Structured LLM Outputs
+- Intelligent Retry Mechanisms
+- AI Voice Generation
 - FastAPI Backend Development
 - Modern Streamlit UI
 - Production-Oriented AI Architecture
@@ -400,5 +502,6 @@ Upcoming features
 
 ## 📄 License
 
-Licensed under the MIT License.
+This project is licensed under the MIT License.
+
 See the [LICENSE](LICENSE) file for details.
